@@ -1,1 +1,1 @@
-# customer_churn_analysis
+# customer_chrun_analysis
