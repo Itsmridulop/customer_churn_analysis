@@ -1,7 +1,4 @@
-from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import root_mean_squared_error
-from sklearn.metrics import r2_score
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -15,7 +12,7 @@ class Model:
         self.trainCol = trainCol.split(' ')
         self.testSize = testSize
 
-    def linear_regression(self):
+    def _prepare_data(self):
         # treatment of null and duplicates
         if self.data.isnull().sum().sum() > 0:
             if self.data.isnull().sum().sum() > 0.3 * len(self.data):
@@ -47,9 +44,17 @@ class Model:
         
         if self.targetCol in self.data.columns:
             if self.data[self.targetCol].dtype == 'object':
-                self.data[self.targetCol] = le.fit_transform(self.data[self.trainCol])
+                self.data[self.targetCol] = le.fit_transform(self.data[self.targetCol])
         else:
             raise KeyError('Invalid Column Name')
+
+    def linear_regression(self):
+        from sklearn.linear_model import LinearRegression
+        from sklearn.metrics import root_mean_squared_error
+        from sklearn.metrics import r2_score
+        
+        # data preparation
+        self._prepare_data()
 
         # split the data
         x = self.data[self.trainCol]
@@ -71,3 +76,32 @@ class Model:
         plt.title('Regression Plot')
         plt.show()
 
+    def logistic_regression(self):
+        from sklearn.linear_model import LogisticRegression
+        from sklearn.metrics import accuracy_score
+        from sklearn.metrics import confusion_matrix
+
+        # data preparation
+        self._prepare_data()
+
+        # split the data
+        x = self.data[self.trainCol]
+        y = self.data[self.targetCol]
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=self.testSize)
+
+        # model
+        model = LogisticRegression()
+        model.fit(x_train, y_train)
+        y_pred = model.predict(x_test)
+        print('y_pred: ', y_pred)
+        print('y_test: ', y_test)
+
+        # evaluation
+        print('Accuracy: ', accuracy_score(y_test, y_pred))
+        print('Confusion Matrix: ', confusion_matrix(y_test, y_pred))
+  
+    def decision_tree(self):
+        pass
+
+    def random_forest(self):
+        pass
