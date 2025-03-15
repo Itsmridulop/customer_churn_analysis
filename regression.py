@@ -101,7 +101,41 @@ class Model:
         print('Confusion Matrix: ', confusion_matrix(y_test, y_pred))
   
     def decision_tree(self):
-        pass
+        from sklearn.tree import DecisionTreeClassifier
+        from sklearn.metrics import accuracy_score
+        from sklearn.metrics import confusion_matrix
+        
+        x = self.data[self.trainCol]
+        y = self.data[self.targetCol]
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=self.testSize)
+
+        # model
+        model = DecisionTreeClassifier()
+        model.fit(x_train, y_train)
+        y_pred = model.predict(x_test)
+        print('y_pred: ', y_pred)
+        print('y_test: ', y_test)
+
+        # evaluation
+        print('Accuracy: ', accuracy_score(y_test, y_pred))
+        print('Confusion Matrix: ', confusion_matrix(y_test, y_pred))
 
     def random_forest(self):
-        pass
+        from sklearn.ensemble import RandomForestClassifier
+        from sklearn.metrics import accuracy_score
+        from sklearn.metrics import confusion_matrix
+
+        x = self.data[self.trainCol]
+        y = self.data[self.targetCol]
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=self.testSize)
+
+        # model
+        model = RandomForestClassifier()
+        model.fit(x_train, y_train)
+        y_pred = model.predict(x_test)
+        print('y_pred: ', y_pred)
+        print('y_test: ', y_test)
+
+        # evaluation
+        print('Accuracy: ', accuracy_score(y_test, y_pred))
+        print('Confusion Matrix: ', confusion_matrix(y_test, y_pred))
